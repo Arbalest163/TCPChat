@@ -38,7 +38,7 @@ namespace TCPChat.Server
                             }
                             else
                             { 
-                            var sw = new StreamWriter(client.GetStream());
+                                var sw = new StreamWriter(client.GetStream());
                                 sw.AutoFlush = true;
                                 sw.WriteLine("Пользователь с таким ником уже есть");
                                 client.Client.Disconnect(false);
@@ -49,8 +49,7 @@ namespace TCPChat.Server
                     while(client.Connected)
                     {
                         try
-                        { 
-                        sr = new StreamReader(client.GetStream());
+                        {
                             var line = sr.ReadLine();
 
                             SendToAllClients(line);
@@ -66,21 +65,29 @@ namespace TCPChat.Server
             }
         }
 
-        private static async void SendToAllClients(string message)
+        private static void SendToAllClients(string message)
         {
-            await Task.Run(() =>
+            Task.Run(() =>
             {
                 for(int i = 0; i < clients.Count; i++)
                 {
-                    if (clients[i].Client.Connected)
+                    try
                     {
-                        var sw = new StreamWriter(clients[i].Client.GetStream());
-                        sw.AutoFlush = true;
-                        sw.WriteLine(message);
+                        if (clients[i].Client.Connected)
+                        {
+                            var sw = new StreamWriter(clients[i].Client.GetStream());
+                            sw.AutoFlush = true;
+                            sw.WriteLine(message);
+                        }
+                        else
+                        {
+                            Console.WriteLine($"{clients[i].Name} отключился");
+                            clients.RemoveAt(i);
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        clients.RemoveAt(i);
+                        Console.WriteLine(ex.Message);
                     }
                 }
             });

@@ -6,7 +6,61 @@
         xmlns:local="clr-namespace:TCPChat.Client"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    <Window.DataContext>
+        <local:MainViewModel/>
+    </Window.DataContext>
+    <Window.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="Margin" Value="3"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="Margin" Value="3"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="3"/>
+        </Style>
+    </Window.Resources>
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel>
+            <UniformGrid Columns="4">
+                <TextBlock Text="IP"/>
+                <TextBlock Text="Port"/>
+                <TextBlock Text="Nick"/>
+            </UniformGrid>
+            <UniformGrid Columns="4">
+                <TextBox Text="{Binding IP}"/>
+                <TextBox Text="{Binding Port}"/>
+                <TextBox Text="{Binding Nick}"/>
+                <Button Command="{Binding ConnectCommand}" Content="Подключиться"/>
+            </UniformGrid>
+        </StackPanel>
 
+        <TextBox Grid.Row="1"
+                 Text="{Binding Chat}"
+                 TextAlignment="Left"
+                 IsReadOnly="True"
+                 IsReadOnlyCaretVisible="True"/>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <TextBox MaxLines="5"
+                     Text="{Binding Message}"
+                     TextAlignment="Left"
+                     TextWrapping="Wrap"/>
+            <Button
+                Grid.Column="1"
+                Command="{Binding SendCommand}"
+                Content="Отправить"/>
+        </Grid>
     </Grid>
 </Window>
